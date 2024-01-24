@@ -1,0 +1,9 @@
+{
+	"name": "adfc3lucia",
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "705d5731-905f-4e8b-b88e-9b04abf92d94",
+		"tenantId": "216c2c0c-506f-4a94-b746-1bd05db6fa0f"
+	}
+}
