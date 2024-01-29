@@ -1,5 +1,5 @@
 {
-	"name": "copyFromMySQLToBlob",
+	"name": "CopyFromMySQLToBlob",
 	"properties": {
 		"activities": [
 			{
