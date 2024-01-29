@@ -1,5 +1,5 @@
 {
-	"name": "copyFromBlobToBlob",
+	"name": "CopyFromBlobToBlob",
 	"properties": {
 		"activities": [
 			{
