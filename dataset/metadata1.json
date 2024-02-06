@@ -1,5 +1,5 @@
 {
-	"name": "metadata",
+	"name": "metadata1",
 	"properties": {
 		"linkedServiceName": {
 			"referenceName": "AzureBlobStorage1",
