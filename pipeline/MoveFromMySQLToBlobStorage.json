@@ -3,7 +3,8 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Copy data1",
+				"name": "CopyTableMetadata",
+				"description": "Copy from MySQL table \"metadata\" to stg container.\n",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -18,11 +19,39 @@
 					"source": {
 						"type": "MySqlSource"
 					},
-					"enableStaging": false
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
 				},
 				"inputs": [
 					{
 						"referenceName": "MySqlTable",
+						"type": "DatasetReference",
+						"parameters": {
+							"table": "metadata"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "metadata",
 						"type": "DatasetReference"
 					}
 				]
