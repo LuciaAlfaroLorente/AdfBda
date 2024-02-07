@@ -5,6 +5,9 @@
 			"referenceName": "MySql1",
 			"type": "LinkedServiceReference"
 		},
+		"folder": {
+			"name": "Old"
+		},
 		"annotations": [],
 		"type": "MySqlTable",
 		"schema": [],
