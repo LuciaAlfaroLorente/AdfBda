@@ -4,6 +4,7 @@
 		"activities": [
 			{
 				"name": "NotebookTest",
+				"description": "Ejecución Notebooks.",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
 				"policy": {
