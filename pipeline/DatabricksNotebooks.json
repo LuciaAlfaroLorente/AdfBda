@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "NotebookTest",
+				"name": "Notebooks",
 				"description": "Ejecución Notebooks.",
 				"type": "DatabricksNotebook",
 				"dependsOn": [],
