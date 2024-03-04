@@ -108,6 +108,7 @@
 														"value": "@variables('fechaActual')",
 														"type": "Expression"
 													},
+													"wildcardFileName": "*",
 													"enablePartitionDiscovery": false
 												},
 												"formatSettings": {

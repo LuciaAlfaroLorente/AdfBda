@@ -58,9 +58,8 @@
 				}
 			},
 			{
-				"name": "IfCondition",
-				"description": "Si existe el archivo fechaActual.flg, mueve la carpeta fechaActual y el archivo fechaActual.flg a raw.\nBorra el contenido de stg.",
-				"type": "IfCondition",
+				"name": "ForEach",
+				"type": "ForEach",
 				"dependsOn": [
 					{
 						"activity": "GetMetadata",
@@ -71,68 +70,87 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"expression": {
-						"value": "@bool(concat(activity('GetMetadata'), 'fechaActual.flg'))",
+					"items": {
+						"value": "@activity('GetMetadata').output.childItems",
 						"type": "Expression"
 					},
-					"ifTrueActivities": [
+					"activities": [
 						{
-							"name": "CopyData",
-							"type": "Copy",
+							"name": "IfCondition",
+							"type": "IfCondition",
 							"dependsOn": [],
-							"policy": {
-								"timeout": "0.12:00:00",
-								"retry": 0,
-								"retryIntervalInSeconds": 30,
-								"secureOutput": false,
-								"secureInput": false
-							},
 							"userProperties": [],
 							"typeProperties": {
-								"source": {
-									"type": "DelimitedTextSource",
-									"storeSettings": {
-										"type": "AzureBlobStorageReadSettings",
-										"recursive": true,
-										"enablePartitionDiscovery": false
-									},
-									"formatSettings": {
-										"type": "DelimitedTextReadSettings"
-									}
+								"expression": {
+									"value": "@equals(item().name, concat(variables('fechaActual'), '.flg'))",
+									"type": "Expression"
 								},
-								"sink": {
-									"type": "DelimitedTextSink",
-									"storeSettings": {
-										"type": "AzureBlobStorageWriteSettings"
-									},
-									"formatSettings": {
-										"type": "DelimitedTextWriteSettings",
-										"quoteAllText": true,
-										"fileExtension": ""
+								"ifTrueActivities": [
+									{
+										"name": "CopyData",
+										"type": "Copy",
+										"dependsOn": [],
+										"policy": {
+											"timeout": "0.12:00:00",
+											"retry": 0,
+											"retryIntervalInSeconds": 30,
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"source": {
+												"type": "DelimitedTextSource",
+												"storeSettings": {
+													"type": "AzureBlobStorageReadSettings",
+													"recursive": true,
+													"wildcardFolderPath": {
+														"value": "@variables('fechaActual')",
+														"type": "Expression"
+													},
+													"wildcardFileName": "*",
+													"enablePartitionDiscovery": false
+												},
+												"formatSettings": {
+													"type": "DelimitedTextReadSettings"
+												}
+											},
+											"sink": {
+												"type": "DelimitedTextSink",
+												"storeSettings": {
+													"type": "AzureBlobStorageWriteSettings"
+												},
+												"formatSettings": {
+													"type": "DelimitedTextWriteSettings",
+													"quoteAllText": true,
+													"fileExtension": ""
+												}
+											},
+											"enableStaging": false,
+											"translator": {
+												"type": "TabularTranslator",
+												"typeConversion": true,
+												"typeConversionSettings": {
+													"allowDataTruncation": true,
+													"treatBooleanAsNumber": false
+												}
+											}
+										},
+										"inputs": [
+											{
+												"referenceName": "Stg",
+												"type": "DatasetReference"
+											}
+										],
+										"outputs": [
+											{
+												"referenceName": "Raw",
+												"type": "DatasetReference"
+											}
+										]
 									}
-								},
-								"enableStaging": false,
-								"translator": {
-									"type": "TabularTranslator",
-									"typeConversion": true,
-									"typeConversionSettings": {
-										"allowDataTruncation": true,
-										"treatBooleanAsNumber": false
-									}
-								}
-							},
-							"inputs": [
-								{
-									"referenceName": "Stg",
-									"type": "DatasetReference"
-								}
-							],
-							"outputs": [
-								{
-									"referenceName": "Raw",
-									"type": "DatasetReference"
-								}
-							]
+								]
+							}
 						}
 					]
 				}
