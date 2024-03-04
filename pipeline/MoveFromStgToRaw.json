@@ -1,6 +1,30 @@
 {
 	"name": "MoveFromStgToRaw",
 	"properties": {
+		"activities": [
+			{
+				"name": "Set Fecha Actual",
+				"type": "SetVariable",
+				"dependsOn": [],
+				"policy": {
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "fechaActual",
+					"value": {
+						"value": "@concat(formatDateTime(utcnow(), 'yyyyMMdd'), '.flg')",
+						"type": "Expression"
+					}
+				}
+			}
+		],
+		"variables": {
+			"fechaActual": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }

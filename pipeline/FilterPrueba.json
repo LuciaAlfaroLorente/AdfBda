@@ -210,6 +210,9 @@
 				"defaultValue": false
 			}
 		},
+		"folder": {
+			"name": "Pruebas"
+		},
 		"annotations": []
 	}
 }
