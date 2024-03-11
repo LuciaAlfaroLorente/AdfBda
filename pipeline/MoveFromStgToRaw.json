@@ -21,7 +21,7 @@
 				}
 			},
 			{
-				"name": "Until1",
+				"name": "TryCopyFromStgToRaw",
 				"type": "Until",
 				"dependsOn": [
 					{
