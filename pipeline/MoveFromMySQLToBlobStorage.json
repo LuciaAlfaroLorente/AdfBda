@@ -27,7 +27,7 @@
 						"formatSettings": {
 							"type": "DelimitedTextWriteSettings",
 							"quoteAllText": true,
-							"fileExtension": ".txt"
+							"fileExtension": ""
 						}
 					},
 					"enableStaging": false,
@@ -45,7 +45,10 @@
 						"referenceName": "MySqlTable",
 						"type": "DatasetReference",
 						"parameters": {
-							"table": "metadata"
+							"table": {
+								"value": "@pipeline().parameters.table",
+								"type": "Expression"
+							}
 						}
 					}
 				],
@@ -57,6 +60,12 @@
 				]
 			}
 		],
+		"parameters": {
+			"table": {
+				"type": "string",
+				"defaultValue": "metadata"
+			}
+		},
 		"annotations": []
 	}
 }
