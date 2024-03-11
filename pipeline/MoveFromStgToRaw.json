@@ -39,7 +39,7 @@
 					},
 					"activities": [
 						{
-							"name": "GetMetadata_copy",
+							"name": "GetMetadata",
 							"description": "Obtener todos los archivos de stg.",
 							"type": "GetMetadata",
 							"dependsOn": [],
@@ -70,11 +70,11 @@
 							}
 						},
 						{
-							"name": "ForEach_copy",
+							"name": "ForEach",
 							"type": "ForEach",
 							"dependsOn": [
 								{
-									"activity": "GetMetadata_copy",
+									"activity": "GetMetadata",
 									"dependencyConditions": [
 										"Succeeded"
 									]
@@ -83,12 +83,12 @@
 							"userProperties": [],
 							"typeProperties": {
 								"items": {
-									"value": "@activity('GetMetadata_copy').output.childItems",
+									"value": "@activity('GetMetadata').output.childItems",
 									"type": "Expression"
 								},
 								"activities": [
 									{
-										"name": "IfCondition_copy1",
+										"name": "IfCondition",
 										"type": "IfCondition",
 										"dependsOn": [],
 										"userProperties": [],
@@ -99,7 +99,7 @@
 											},
 											"ifTrueActivities": [
 												{
-													"name": "CopyData_copy1",
+													"name": "CopyData",
 													"type": "Copy",
 													"dependsOn": [
 														{
@@ -169,11 +169,11 @@
 													]
 												},
 												{
-													"name": "Delete1_copy1",
+													"name": "Delete1",
 													"type": "Delete",
 													"dependsOn": [
 														{
-															"activity": "CopyData_copy1",
+															"activity": "CopyData",
 															"dependencyConditions": [
 																"Succeeded"
 															]
@@ -213,11 +213,11 @@
 													}
 												},
 												{
-													"name": "Delete2_copy1",
+													"name": "Delete2",
 													"type": "Delete",
 													"dependsOn": [
 														{
-															"activity": "CopyData_copy1",
+															"activity": "CopyData",
 															"dependencyConditions": [
 																"Succeeded"
 															]
