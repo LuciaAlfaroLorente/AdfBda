@@ -24,14 +24,7 @@
 				"name": "GetMetadata",
 				"description": "Obtener todos los archivos de stg.",
 				"type": "GetMetadata",
-				"dependsOn": [
-					{
-						"activity": "SetFechaActual",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
+				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
 					"retry": 0,
@@ -50,6 +43,7 @@
 					],
 					"storeSettings": {
 						"type": "AzureBlobStorageReadSettings",
+						"recursive": true,
 						"enablePartitionDiscovery": false
 					},
 					"formatSettings": {
@@ -239,6 +233,243 @@
 							}
 						}
 					]
+				}
+			},
+			{
+				"name": "Until1",
+				"type": "Until",
+				"dependsOn": [
+					{
+						"activity": "SetFechaActual",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"expression": {
+						"value": "@variables('fechaActual')",
+						"type": "Expression"
+					},
+					"activities": [
+						{
+							"name": "GetMetadata_copy",
+							"description": "Obtener todos los archivos de stg.",
+							"type": "GetMetadata",
+							"dependsOn": [],
+							"policy": {
+								"timeout": "0.12:00:00",
+								"retry": 0,
+								"retryIntervalInSeconds": 30,
+								"secureOutput": false,
+								"secureInput": false
+							},
+							"userProperties": [],
+							"typeProperties": {
+								"dataset": {
+									"referenceName": "Stg",
+									"type": "DatasetReference"
+								},
+								"fieldList": [
+									"childItems"
+								],
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							}
+						},
+						{
+							"name": "ForEach_copy",
+							"type": "ForEach",
+							"dependsOn": [
+								{
+									"activity": "GetMetadata_copy",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"items": {
+									"value": "@activity('GetMetadata_copy').output.childItems",
+									"type": "Expression"
+								},
+								"activities": [
+									{
+										"name": "IfCondition_copy1",
+										"type": "IfCondition",
+										"dependsOn": [],
+										"userProperties": [],
+										"typeProperties": {
+											"expression": {
+												"value": "@equals(item().name, concat(variables('fechaActual'), '.flg'))",
+												"type": "Expression"
+											},
+											"ifTrueActivities": [
+												{
+													"name": "CopyData_copy1",
+													"type": "Copy",
+													"dependsOn": [],
+													"policy": {
+														"timeout": "0.12:00:00",
+														"retry": 0,
+														"retryIntervalInSeconds": 30,
+														"secureOutput": false,
+														"secureInput": false
+													},
+													"userProperties": [],
+													"typeProperties": {
+														"source": {
+															"type": "DelimitedTextSource",
+															"storeSettings": {
+																"type": "AzureBlobStorageReadSettings",
+																"recursive": true,
+																"wildcardFolderPath": {
+																	"value": "@variables('fechaActual')",
+																	"type": "Expression"
+																},
+																"wildcardFileName": "*",
+																"enablePartitionDiscovery": false
+															},
+															"formatSettings": {
+																"type": "DelimitedTextReadSettings"
+															}
+														},
+														"sink": {
+															"type": "DelimitedTextSink",
+															"storeSettings": {
+																"type": "AzureBlobStorageWriteSettings"
+															},
+															"formatSettings": {
+																"type": "DelimitedTextWriteSettings",
+																"quoteAllText": true,
+																"fileExtension": ""
+															}
+														},
+														"enableStaging": false,
+														"translator": {
+															"type": "TabularTranslator",
+															"typeConversion": true,
+															"typeConversionSettings": {
+																"allowDataTruncation": true,
+																"treatBooleanAsNumber": false
+															}
+														}
+													},
+													"inputs": [
+														{
+															"referenceName": "Stg",
+															"type": "DatasetReference"
+														}
+													],
+													"outputs": [
+														{
+															"referenceName": "Raw",
+															"type": "DatasetReference"
+														}
+													]
+												},
+												{
+													"name": "Delete1_copy1",
+													"type": "Delete",
+													"dependsOn": [
+														{
+															"activity": "CopyData_copy1",
+															"dependencyConditions": [
+																"Succeeded"
+															]
+														}
+													],
+													"policy": {
+														"timeout": "0.12:00:00",
+														"retry": 0,
+														"retryIntervalInSeconds": 30,
+														"secureOutput": false,
+														"secureInput": false
+													},
+													"userProperties": [],
+													"typeProperties": {
+														"dataset": {
+															"referenceName": "StgFolder",
+															"type": "DatasetReference",
+															"parameters": {
+																"date": {
+																	"value": "@variables('fechaActual')",
+																	"type": "Expression"
+																}
+															}
+														},
+														"logStorageSettings": {
+															"linkedServiceName": {
+																"referenceName": "AzureBlobStorage1",
+																"type": "LinkedServiceReference"
+															}
+														},
+														"enableLogging": true,
+														"storeSettings": {
+															"type": "AzureBlobStorageReadSettings",
+															"recursive": true,
+															"enablePartitionDiscovery": false
+														}
+													}
+												},
+												{
+													"name": "Delete2_copy1",
+													"type": "Delete",
+													"dependsOn": [
+														{
+															"activity": "CopyData_copy1",
+															"dependencyConditions": [
+																"Succeeded"
+															]
+														}
+													],
+													"policy": {
+														"timeout": "0.12:00:00",
+														"retry": 0,
+														"retryIntervalInSeconds": 30,
+														"secureOutput": false,
+														"secureInput": false
+													},
+													"userProperties": [],
+													"typeProperties": {
+														"dataset": {
+															"referenceName": "Stg",
+															"type": "DatasetReference"
+														},
+														"logStorageSettings": {
+															"linkedServiceName": {
+																"referenceName": "AzureBlobStorage1",
+																"type": "LinkedServiceReference"
+															}
+														},
+														"enableLogging": true,
+														"storeSettings": {
+															"type": "AzureBlobStorageReadSettings",
+															"recursive": true,
+															"wildcardFileName": {
+																"value": "@concat(variables('fechaActual'), '.flg')",
+																"type": "Expression"
+															},
+															"enablePartitionDiscovery": false
+														}
+													}
+												}
+											]
+										}
+									}
+								]
+							}
+						}
+					],
+					"timeout": "0.02:00:00"
 				}
 			}
 		],
