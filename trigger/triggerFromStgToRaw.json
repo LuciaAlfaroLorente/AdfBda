@@ -3,12 +3,19 @@
 	"properties": {
 		"annotations": [],
 		"runtimeState": "Stopped",
-		"pipelines": [],
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "MoveFromStgToRaw",
+					"type": "PipelineReference"
+				}
+			}
+		],
 		"type": "ScheduleTrigger",
 		"typeProperties": {
 			"recurrence": {
-				"frequency": "Minute",
-				"interval": 10,
+				"frequency": "Hour",
+				"interval": 24,
 				"startTime": "2024-03-11T05:30:00",
 				"timeZone": "Romance Standard Time"
 			}
