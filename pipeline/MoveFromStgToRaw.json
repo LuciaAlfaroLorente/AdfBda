@@ -91,6 +91,44 @@
 									"type": "Expression"
 								}
 							}
+						},
+						{
+							"name": "If Condition1",
+							"type": "IfCondition",
+							"dependsOn": [
+								{
+									"activity": "Filter",
+									"dependencyConditions": [
+										"Succeeded"
+									]
+								}
+							],
+							"userProperties": [],
+							"typeProperties": {
+								"expression": {
+									"value": "@greaterOrEquals(activity('Filter').output.FilteredItemsCount, 1)",
+									"type": "Expression"
+								},
+								"ifTrueActivities": [
+									{
+										"name": "StopUntil",
+										"type": "SetVariable",
+										"dependsOn": [],
+										"policy": {
+											"secureOutput": false,
+											"secureInput": false
+										},
+										"userProperties": [],
+										"typeProperties": {
+											"variableName": "stopUntil",
+											"value": {
+												"value": "@bool(true)",
+												"type": "Expression"
+											}
+										}
+									}
+								]
+							}
 						}
 					],
 					"timeout": "0.02:00:00"
@@ -101,7 +139,7 @@
 				"type": "Copy",
 				"dependsOn": [
 					{
-						"activity": "StopUntil",
+						"activity": "TryCopyFromStgToRaw",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -249,30 +287,6 @@
 							"type": "Expression"
 						},
 						"enablePartitionDiscovery": false
-					}
-				}
-			},
-			{
-				"name": "StopUntil",
-				"type": "SetVariable",
-				"dependsOn": [
-					{
-						"activity": "TryCopyFromStgToRaw",
-						"dependencyConditions": [
-							"Succeeded"
-						]
-					}
-				],
-				"policy": {
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"variableName": "stopUntil",
-					"value": {
-						"value": "@bool(true)",
-						"type": "Expression"
 					}
 				}
 			}
